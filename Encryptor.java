@@ -1,5 +1,9 @@
 package Encryption;
 
+/*
+* Encrypts strings using various techniques and output strings and 
+* public keys for the decryptor to use.
+*/
 public class Encryptor {
 	
 	private int privateKey = 5;

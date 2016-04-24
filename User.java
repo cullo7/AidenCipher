@@ -2,6 +2,9 @@ package Encryption;
 
 import java.math.BigInteger;
 
+/*
+* represents an applicant using the encryption and decryption classes.
+*/
 public class User {
 
 	public static void main(String [] args){

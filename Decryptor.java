@@ -3,6 +3,10 @@ package Encryption;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+/*
+* Decrypts strings that have been encrypted. Using public 
+* and/or private keys
+*/
 public class Decryptor {
 	
 	private int privateKey = 5;
