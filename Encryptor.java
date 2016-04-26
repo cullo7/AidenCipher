@@ -96,6 +96,41 @@ public class Encryptor {
 	}
 	
 	/*
+	 * lists primes from given lower bound to given higher bound
+	 */
+	public int [] listPrimes(int bottom, int top){
+		int [] primes = new int[top-bottom];
+		int k = 0;
+		for(int i = bottom; i <= top; i++){
+			boolean primeBool = true;
+			for(int j = i-1; j > 1; j--){
+				if(i%j == 0){
+					primeBool = false;
+				}
+			}
+			if(primeBool){
+				primes[k] = i;
+				k++;
+				
+			}
+		}
+		int count = 0;
+		for(int i = 0; i < primes.length; i++){
+			if(primes[i] != 0){
+				count++;
+			}
+		}
+		int [] newPrimes = new int[count];
+		for(int i = 0, g = 0; i < primes.length; i++){
+			if(primes[i] != 0){
+				newPrimes[g] = primes[i];
+				g++;
+			}
+		}
+		return newPrimes;
+	}
+	
+	/*
 	 * Asserts that String contains only letters and spaces
 	 * @param message message to be verified
 	 * @return false if parameters aren't met, true otherwise
@@ -107,5 +142,23 @@ public class Encryptor {
 			}
 		}
 		return true;
+	}
+	
+	/*
+	 * RSA encryption using prime factorization, the Phi function and Euler's theorem.
+	 * Encrypts message base on two public keys given by the private key holder. Through
+	 * a mathematical algorithm message is encoded into a group of numbers separated by 
+	 * a space. 
+	 * @param message message to be encrypted
+	 * @ e variable used in equation as exponent, given by decrypting system
+	 * @ n variable used in equation as modulo character
+	 * return encrypted strings of numbers separated by a space
+	 */
+	public String encryptRSA(String message, int e, int n){
+		String code = "";
+		for(int i = 0; i < message.length(); i++){
+			code+=(int)(Math.pow(message.charAt(i), e))%n+" ";
+		}
+		return code.trim();
 	}
 }

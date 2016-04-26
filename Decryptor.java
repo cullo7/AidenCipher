@@ -12,6 +12,7 @@ public class Decryptor {
 	private int privateKey = 5;
 	private String keyWord = "bacon";
 	private int aidenCipherKey = 5;
+	private int decryptorKey = 0;
 	
 	/*
 	 * Decrypts a method using key integer as offset. iterates over message and substracts
@@ -106,5 +107,79 @@ public class Decryptor {
 			}
 		}
 		return result;
+	}
+	
+	/*
+	 * Generates e and n variable to be given to encryptor. 
+	 * @ param e random exponent that has no common factors with n
+	 * @ param n phi function evaluation of two randomly generated prime numbers
+	 */
+	public int [] generatePublicKeys(){
+		while(true){
+			int lowerBound = (int)(3+(3*Math.random()))*10;
+			int p1 = getRandomPrime(lowerBound, lowerBound + 5);
+			int p2 = getRandomPrime(lowerBound + 6, lowerBound + 10);
+			int n = p1*p2;
+			int phiOfN = (p1-1)*(p2-1);
+			int e = (int)(3*Math.random());
+			if(e <= 1){
+				e = 3;
+			}
+			else if(e <= 2 && e > 1){
+				e = 5;
+			}
+			else if(e <= 3 && e > 2){
+				e = 7;
+			}
+			int k = 1;
+			while((k*phiOfN+1) % e != 0){
+				k++;
+				if(k > 50){
+					break;
+				}
+			}
+			if((k*phiOfN+1) % e != 0){
+				continue;
+			}
+			decryptorKey = (k*phiOfN+1)/e;
+			return new int[]{e, n};
+		}
+	}
+	
+	public String decryptRSA(String numbers, int n){
+		String [] rawLetters = numbers.split(" ");
+		int [] Letters  = new int [rawLetters.length];
+		String message = "";
+		for(int i = 0; i < rawLetters.length; i++){
+			Letters[i] = (int)(Math.pow(Double.parseDouble(rawLetters[i]), decryptorKey)%n);	
+			System.out.println(Letters[i]);
+		}
+		for(int i  = 0; i < Letters.length; i++){
+			message+=(char)Letters[i];
+		}
+		return message;
+	}
+	
+	/*
+	 * Finds random prime number in the given interval.
+	 * @param low bottom of range of desired values
+	 * @param top top of range of desired values
+	 */
+	public int getRandomPrime(int bottom, int top){
+		int prime = -1;
+		outerloop:
+		for(int i = bottom; i <= top; i++){
+			boolean primeBool = true;
+			for(int j = i-1; j > 1; j--){
+				if(i%j == 0){
+					primeBool = false;
+				}
+			}
+			if(primeBool){
+				prime = i;
+				break outerloop;
+			}
+		}
+		return prime;
 	}
 }
