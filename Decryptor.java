@@ -14,6 +14,16 @@ public class Decryptor {
 	private int aidenCipherKey = 5;
 	private int decryptorKey = 0;
 	
+	public Decryptor(int pKey, String kWord, int cKey, int dKey){
+		privateKey = pKey;
+		keyWord = kWord;
+		aidenCipherKey = cKey;
+		decryptorKey = dKey;
+	}
+	public Decryptor(){}
+	
+	/*------------------------CAESAR CIPHER----------------------------*/
+	
 	/*
 	 * Decrypts a method using key integer as offset. iterates over message and substracts
 	 * corresponding key to each letter in message.
@@ -35,51 +45,6 @@ public class Decryptor {
 			}
 		}
 		return result;
-	}
-	
-	/*
-	 * decrypts a String of int values that have been encrypted by "Aiden Cipher".
-	 * Method uses BigInteger and BigDecimal class so it could feasibly be able to 
-	 * deal with very large numbers.
-	 * @param message encryption to be decrypted
-	 * @return original message
-	 */
-	public String decryptAidenCipher(String message){
-		if(message.length() == 0){
-			throw  new IllegalArgumentException("String length is 0");
-		}
-		String result = "";
-		String [] strings = message.split(":");
-		for(int i = 0; i < strings.length; i++){
-			if(strings[i].charAt(0) != ' '){
-				BigInteger b1 = new BigInteger(new BigDecimal(strings[i]).toPlainString());
-				BigInteger b2 = new BigInteger(Factorial(aidenCipherKey)+"");
-				result+= (char)squareRoot(b1.divide(b2), 3);
-			}
-			else{
-				result+=" ";
-			}
-		}
-		return result;
-	}
-	
-	public int Factorial(int num){
-		int result = 1;
-		for(int i  = 0; i < num-1; i++){
-			result*=num-i;
-		}
-		return result;
-	}
-	
-	public int squareRoot(BigInteger b, int power){
-		BigInteger b3 = new BigInteger("0");
-		for(int i = 0; i < b.intValue(); i++){
-			BigInteger b2 = new BigInteger(i+"");
-			if(Math.pow(i, power) == b.intValue() && b.mod(b2).compareTo(b3) == 0){
-				return i;
-			}
-		}
-		return -1;
 	}
 	
 	/*
@@ -109,10 +74,41 @@ public class Decryptor {
 		return result;
 	}
 	
+	/*------------------------AIDEN CIPHER----------------------------*/
+	
+	/*
+	 * decrypts a String of int values that have been encrypted by "Aiden Cipher".
+	 * Method uses BigInteger and BigDecimal class so it could feasibly be able to 
+	 * deal with very large numbers.
+	 * @param message encryption to be decrypted
+	 * @return original message
+	 */
+	public String decryptAidenCipher(String message){
+		if(message.length() == 0){
+			throw  new IllegalArgumentException("String length is 0");
+		}
+		String result = "";
+		String [] strings = message.split(":");
+		for(int i = 0; i < strings.length; i++){
+			if(strings[i].charAt(0) != ' '){
+				BigInteger b1 = new BigInteger(new BigDecimal(strings[i]).toPlainString());
+				BigInteger b2 = new BigInteger(Factorial(aidenCipherKey)+"");
+				result+= (char)squareRoot(b1.divide(b2), 3);
+			}
+			else{
+				result+=" ";
+			}
+		}
+		return result;
+	}
+	
+	/*------------------------RSA Encryption----------------------------*/
+	
 	/*
 	 * Generates e and n variable to be given to encryptor. 
-	 * @ param e random exponent that has no common factors with n
-	 * @ param n phi function evaluation of two randomly generated prime numbers
+	 * @param e random exponent that has no common factors with n
+	 * @param n phi function evaluation of two randomly generated prime numbers
+	 * @return two necessary keys for future encryption
 	 */
 	public int [] generatePublicKeys(){
 		while(true){
@@ -146,19 +142,30 @@ public class Decryptor {
 		}
 	}
 	
+	/*
+	 * decrypts RSA encrypted message using inverse of method used to encrypt it
+	 * and decryptor key. equation --> ((number)^decryptorKey)%n
+	 * @param numbers letters encrypted into number all in a string
+	 * @param n variable used to encrypt message
+	 */
 	public String decryptRSA(String numbers, int n){
 		String [] rawLetters = numbers.split(" ");
 		int [] Letters  = new int [rawLetters.length];
 		String message = "";
 		for(int i = 0; i < rawLetters.length; i++){
-			Letters[i] = (int)(Math.pow(Double.parseDouble(rawLetters[i]), decryptorKey)%n);	
-			System.out.println(Letters[i]);
+			BigInteger b1 = new BigInteger(rawLetters[i]+"");
+			BigInteger b2 = new BigInteger(decryptorKey+"");
+			BigInteger b3 = new BigInteger(n+"");
+			b1 = b1.modPow(b2, b3);
+			Letters[i] = b1.intValue();	
 		}
 		for(int i  = 0; i < Letters.length; i++){
 			message+=(char)Letters[i];
 		}
 		return message;
 	}
+	
+	/*------------------------MATH OPERATIONS----------------------------*/
 	
 	/*
 	 * Finds random prime number in the given interval.
@@ -181,5 +188,33 @@ public class Decryptor {
 			}
 		}
 		return prime;
+	}
+	
+	/*
+	 * calculates factorial
+	 */
+	public int Factorial(int num){
+		int result = 1;
+		for(int i  = 0; i < num-1; i++){
+			result*=num-i;
+		}
+		return result;
+	}
+	
+	/*
+	 * calculates root to any power of a big integer variable
+	 * @param b Big Integer to take the root of
+	 * @param power degree root to be taken of b
+	 * @return the root or -1 if there is no non-decimal root
+	 */
+	public int squareRoot(BigInteger b, int power){
+		BigInteger b3 = new BigInteger("0");
+		for(int i = 0; i < b.intValue(); i++){
+			BigInteger b2 = new BigInteger(i+"");
+			if(Math.pow(i, power) == b.intValue() && b.mod(b2).compareTo(b3) == 0){
+				return i;
+			}
+		}
+		return -1;
 	}
 }

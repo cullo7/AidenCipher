@@ -10,6 +10,16 @@ public class Encryptor {
 	private String keyWord = "bacon";
 	private int aidenCipherKey = 5;
 	
+	public Encryptor(int pKey, String kWord, int cKey){
+		privateKey = pKey;
+		keyWord = kWord;
+		aidenCipherKey = cKey;
+	}
+	
+	public Encryptor(){}
+	
+	/*------------------------CAESAR CIPHER----------------------------*/
+	
 	/*
 	 * Encrypts a method using key integer as offset. iterates over message and adds
 	 * corresponding key to each letter in message.
@@ -60,16 +70,7 @@ public class Encryptor {
 		return result;
 	}
 	
-	/*
-	 * Calculates factorial of a number
-	 */
-	public int Factorial(int num){
-		int result = 1;
-		for(int i = 0; i < num; i++){
-			result*=num-i;
-		}
-		return result;
-	}
+	/*------------------------AIDEN CIPHER----------------------------*/
 	
 	/*
 	 * encrypts message by cubing the int value of each letter in the message then
@@ -91,6 +92,39 @@ public class Encryptor {
 				result+=" ";
 			}
 			result+=":";
+		}
+		return result;
+	}
+	
+	/*------------------------RSA ENCRYPTION----------------------------*/
+	
+	/*
+	 * RSA encryption using prime factorization, the Phi function and Euler's theorem.
+	 * Encrypts message base on two public keys given by the private key holder. Through
+	 * a mathematical algorithm message is encoded into a group of numbers separated by 
+	 * a space. equation --> ((number)^e)%n
+	 * @param message message to be encrypted
+	 * @ e variable used in equation as exponent, given by decrypting system
+	 * @ n variable used in equation as modulo character
+	 * return encrypted strings of numbers separated by a space
+	 */
+	public String encryptRSA(String message, int e, int n){
+		String code = "";
+		for(int i = 0; i < message.length(); i++){
+			code+=(int)(Math.pow(message.charAt(i), e))%n+" ";
+		}
+		return code.trim();
+	}
+	
+	/*------------------------MATH OPERATIONS----------------------------*/
+	
+	/*
+	 * Calculates factorial of a number
+	 */
+	public int Factorial(int num){
+		int result = 1;
+		for(int i = 0; i < num; i++){
+			result*=num-i;
 		}
 		return result;
 	}
@@ -142,23 +176,5 @@ public class Encryptor {
 			}
 		}
 		return true;
-	}
-	
-	/*
-	 * RSA encryption using prime factorization, the Phi function and Euler's theorem.
-	 * Encrypts message base on two public keys given by the private key holder. Through
-	 * a mathematical algorithm message is encoded into a group of numbers separated by 
-	 * a space. 
-	 * @param message message to be encrypted
-	 * @ e variable used in equation as exponent, given by decrypting system
-	 * @ n variable used in equation as modulo character
-	 * return encrypted strings of numbers separated by a space
-	 */
-	public String encryptRSA(String message, int e, int n){
-		String code = "";
-		for(int i = 0; i < message.length(); i++){
-			code+=(int)(Math.pow(message.charAt(i), e))%n+" ";
-		}
-		return code.trim();
 	}
 }
