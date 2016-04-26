@@ -1,5 +1,14 @@
 package Encryption;
 
+/* TODO:
+* make a padding for encrypted number stream since patterns may allow for it to be cracked:
+*	- maybe an invisible escape character? I think that could be caught though
+*	- hashcode
+*	- each number could be preceded by a binary number (inverted every other time and increasing by two) not very robust, but hard to decode
+*	- it has sto be something that changes each time
+* finish RSA encryption/decryption, maybe make methods more efficient
+* organize code and methods, add javadocs
+
 /*
 * Encrypts strings using various techniques and output strings and 
 * public keys for the decryptor to use.
